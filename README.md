@@ -1,17 +1,19 @@
 # ControlClaw skills
 
-Agent skills (Claude Code `SKILL.md` format) for setting things up around ControlClaw.
+Agent skills for [ControlClaw](https://controlclaw.com), the hosting platform for OpenClaw AI
+assistants. Each skill walks a coding agent (Claude Code or any agent that reads `SKILL.md`) through
+a setup task around ControlClaw.
 
 | Skill | What it does |
 | --- | --- |
-| [`controlclaw-google-oauth`](skills/controlclaw-google-oauth/SKILL.md) | Creates a Google Cloud project and OAuth client in the user's Google account, ready to drop into ControlClaw's Integrations, Google, Set up. |
+| [`controlclaw-google-oauth`](skills/controlclaw-google-oauth/SKILL.md) | Creates a Google Cloud project and OAuth client in your Google account, ready to drop into ControlClaw's Integrations, Google, Set up. You sign in to Google yourself; the agent does the rest. |
 
 ## Install
 
-Link each skill into your skills folder:
-
 ```bash
+git clone https://github.com/madarco/controlclaw-skills.git
+cd controlclaw-skills
 for d in skills/*/; do ln -sfn "$PWD/$d" ~/.claude/skills/"$(basename "$d")"; done
 ```
 
-Then run it as `/controlclaw-google-oauth`.
+Then run `/controlclaw-google-oauth` in Claude Code.
