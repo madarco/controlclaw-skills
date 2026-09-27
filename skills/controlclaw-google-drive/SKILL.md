@@ -88,11 +88,11 @@ Note its email: `controlclaw-drive@<project-id>.iam.gserviceaccount.com`.
 **Add key, Create new key, JSON, Create.** The browser downloads the key immediately and it cannot be
 downloaded again.
 
-**Make sure you can reach the download before you click Create.** The Claude desktop app's built-in
-browser pane throws the download away (the console still says "Private key saved to your computer").
-Use a browser whose download folder you know: agent-browser, Playwright with a downloads path, or ask
-the user to open that page in their own browser and click Create there, then tell you the file name
-in `~/Downloads`.
+**Know where the download lands before you click Create.** The Claude desktop app's built-in
+browser pane saves it outside anywhere you can see: the console says "Private key saved to your
+computer" and names the file (`<project-id>-<key-id>.json`), but it is not in `~/Downloads`. Give the
+user that file name and ask them where it is. With agent-browser or Playwright, set a downloads path
+first. Do not create a second key because you cannot find the first.
 
 Then move it where the user asked and lock it down:
 
@@ -103,7 +103,7 @@ python3 -c "import json,sys; k=json.load(open(sys.argv[1])); print(k['type'], k[
 
 It should print `service_account` and the service account's email. Print nothing else from it.
 
-If a key was created but its file was lost, delete that key on the same Keys tab (ask the user
+If a key's file is really lost, delete that key on the same Keys tab (ask the user
 first): a lost key is a credential nobody controls.
 
 Some organizations block key creation with the `iam.disableServiceAccountKeyCreation` policy. A
@@ -146,4 +146,4 @@ Tell the user:
 | Folder mounts but is empty | Only files inside were shared, or it holds only Docs/Sheets/Slides | Share the folder itself; native Google files never show |
 | "Google Drive API has not been used in project ..." | Drive API off, or key from another project | Enable Drive in the key's project (step 2) |
 | Adding a read-write folder fails its write check | Folder is in My Drive, not a shared drive | Add it read-only, or move it to a shared drive (Workspace) |
-| "Private key saved to your computer" but no file | The browser dropped the download | Delete that key, create another from a browser whose downloads you can reach |
+| "Private key saved to your computer" but no file in `~/Downloads` | The browser saved it somewhere else | Ask the user to find the file by its name; delete the key only if it is really gone |
