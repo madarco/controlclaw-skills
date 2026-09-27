@@ -7,6 +7,7 @@ a setup task around ControlClaw.
 | Skill | What it does |
 | --- | --- |
 | [`controlclaw-google-oauth`](skills/controlclaw-google-oauth/SKILL.md) | Creates a Google Cloud project and OAuth client in your Google account, ready to drop into ControlClaw's Integrations, Google, Set up. You sign in to Google yourself; the agent does the rest. |
+| [`controlclaw-google-drive`](skills/controlclaw-google-drive/SKILL.md) | Creates a Google service account and key, and shares your chosen Drive folders with it, so ControlClaw can mount them on your agents. |
 
 ## Install
 
@@ -16,4 +17,4 @@ cd controlclaw-skills
 for d in skills/*/; do ln -sfn "$PWD/$d" ~/.claude/skills/"$(basename "$d")"; done
 ```
 
-Then run `/controlclaw-google-oauth` in Claude Code.
+Then run `/controlclaw-google-oauth` or `/controlclaw-google-drive` in Claude Code.
