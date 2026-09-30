@@ -12,7 +12,8 @@ skill creates that project and client in the user's Google account, in a browser
 The result is:
 
 - a Google Cloud project with the six APIs ControlClaw uses turned on,
-- a consent screen, published **In production** (unverified), so the connection does not expire,
+- a consent screen whose sign-ins do not expire: **Internal** for a Google Workspace organisation, or
+  **External** and published **In production** (unverified) for anyone else,
 - a **Web application** OAuth client with ControlClaw's redirect URI,
 - the client JSON saved on disk, mode `0600`.
 
@@ -27,6 +28,11 @@ Ask the user for:
 2. **Where to save the client JSON.** Suggest `~/controlclaw-google-oauth-<project-id>.json`.
 3. **Extra redirect hosts**, only if they test ControlClaw from somewhere other than
    `controlclaw.com` (a dev tunnel host, for example). Most people have none.
+4. **Internal or External**, unless the account is a `gmail.com` (or `googlemail.com`) address,
+   which can only be External; do not ask then. Otherwise ask: "Does this account belong to a
+   Google Workspace organisation, and will only accounts in that organisation sign in to this
+   app?" Yes means **Internal**; no, or not sure, means **External**. Internal has no Testing mode,
+   no 7-day sign-out and no "unverified app" warning, so steps 5 and 7 are skipped.
 
 Use a **fresh browser session** (a new tab in your own browser pane, or a new agent-browser
 session), not the user's everyday browser, so the project lands in the right account.
@@ -66,7 +72,8 @@ is needed for any of this.
 
 Name it e.g. `ControlClaw <Family or Org>`. The project ID is derived from the name and shown under
 the field (`controlclaw-moma` for `ControlClaw MoMa`); note it. Parent resource "No organization" is
-right for a gmail.com account. Create, and wait about 10 seconds until the console switches to the
+right for a gmail.com account; a Workspace account should leave it on its organisation, which
+Internal needs. Create, and wait about 10 seconds until the console switches to the
 new project's dashboard.
 
 ### 3. Turn on the APIs
@@ -92,13 +99,18 @@ new account; close them first.
 
 - **App name**: `ControlClaw <Family or Org>`. The user sees it on Google's sign-in screen.
 - **User support email**: the account (pick it from the dropdown).
-- **Audience**: **External**. Internal is only for Google Workspace organizations; a gmail.com
-  account cannot pick it.
+- **Audience**: what the user chose before you started. **Internal** only lets accounts in the
+  Workspace organisation sign in, and the grant does not expire. **External** lets any Google
+  account sign in, and starts in Testing (steps 5 and 7). A gmail.com account only offers
+  External. If Internal is greyed out, the project has no organisation parent: use External and
+  tell the user why.
 - **Contact email**: the account; press Enter so it becomes a chip.
 - **Finish**: stop and ask the user to confirm the User Data Policy checkbox. Then tick it,
   Continue, Create. The page shows "OAuth configuration created!".
 
-### 5. Test user
+### 5. Test user (External only)
+
+Skip this for Internal.
 
 `https://console.cloud.google.com/auth/audience?project=<project-id>`
 
@@ -146,7 +158,9 @@ chmod 600 "$OUT"
 Check the file parses and has all seven keys, then close the dialog with OK. If the file is lost
 later, the secret cannot be viewed again: the client's page has "Add secret" to make a new one.
 
-### 7. Publish (ask first)
+### 7. Publish (External only, ask first)
+
+Skip this for Internal: an Internal app has no Testing mode and nothing to publish.
 
 In **Testing**, Google throws the grant away after 7 days and the user must "Sign in again" in
 ControlClaw every week. Publishing fixes that. Explain this and ask before doing it.
@@ -161,7 +175,7 @@ ControlClaw every week. Publishing fixes that. Explain this and ask before doing
 2. `https://console.cloud.google.com/auth/audience?project=<project-id>`: **Publish app**, Confirm.
    Status becomes **In production**.
 
-The app stays **unverified**, which is fine for a family or a small team: Google shows an "unverified
+The External app stays **unverified**, which is fine for a family or a small team: Google shows an "unverified
 app" screen at sign-in, and an unverified app can be granted by at most 100 accounts over its
 lifetime. Do not submit it for verification; that is a weeks-long review for an app one account
 uses.
@@ -175,8 +189,9 @@ Tell the user:
 - how to connect it:
   1. ControlClaw, **Integrations, Google, Set up**; drop in the JSON.
   2. Tick the services the agents need.
-  3. Sign in with Google as the account. On "Google hasn't verified this app", click
-     **Advanced**, then **Go to ControlClaw ... (unsafe)**. Allow every permission listed.
+  3. Sign in with Google as the account. For an External app, on "Google hasn't verified this
+     app", click **Advanced**, then **Go to ControlClaw ... (unsafe)**; an Internal app skips that
+     screen. Allow every permission listed.
   4. Confirm with the code ControlClaw sends to the approved channel, then grant the connection to
      an agent.
 - that Google says new client settings take "5 minutes to a few hours"; an early `redirect_uri_mismatch`
@@ -187,8 +202,8 @@ Tell the user:
 | What the user sees | Why | Fix |
 | --- | --- | --- |
 | "This Google account cannot use everything you asked for. \<Service\>: ... has not been used in project ... or it is disabled" | That service's API is off | Enable it (step 3 URL), wait a minute, connect again |
-| "... Contacts: The caller does not have permission to request "people/me". Request requires one of the following scopes: [profile]" | A ControlClaw bug, not the Google setup: its Contacts check reads the account's own profile, which the contacts permission does not cover | Connect without Contacts until the fix ships |
 | `Error 403: access_denied` "has not completed the Google verification process" | App is in Testing and the account is not a test user | Add the test user (step 5) or publish (step 7) |
 | `Error 400: redirect_uri_mismatch` | The host ControlClaw is on is not a redirect URI on the client | Add `https://<host>/oauth/callback` to the client, wait a few minutes |
-| Connection stops working after a week | App still in Testing | Publish (step 7), then "Sign in again" on the Google card |
+| Connection stops working after a week | External app still in Testing | Publish (step 7), then "Sign in again" on the Google card |
+| `Error 403: org_internal` | The app is Internal and the account signing in is outside its Workspace organisation | Sign in with an account in the organisation, or switch the audience to External (Audience page, **Make external**) and do steps 5 and 7 |
 | Google says the app "already has access to N permissions" | The account connected before; Google merges the old grant with the new request | Nothing; continue |
