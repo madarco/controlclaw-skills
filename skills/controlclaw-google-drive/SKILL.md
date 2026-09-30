@@ -1,6 +1,6 @@
 ---
 name: controlclaw-google-drive
-description: Set up a Google service account and JSON key so Google Drive folders can be mounted on ControlClaw agents (Integrations, Google, Drive folders). Drives a browser; the user signs in to Google themselves and shares the folders. Use when someone wants their agents to read or write files in Google Drive folders through ControlClaw.
+description: Set up a Google service account and JSON key so Google Drive folders can be mounted on ControlClaw agents (Integrations, Google Drive folders). Drives a browser; the user signs in to Google themselves and shares the folders. Use when someone wants their agents to read or write files in Google Drive folders through ControlClaw.
 ---
 
 # Google Drive folders for ControlClaw
@@ -8,8 +8,8 @@ description: Set up a Google service account and JSON key so Google Drive folder
 ControlClaw can mount Google Drive folders on an agent as ordinary directories
 (`~/.openclaw/workspace/Drive/<name>`). It reaches them with a **service account**: a Google identity
 the user creates in their own Cloud project, which can see **only the folders shared with it**.
-Nothing else in the user's Drive is reachable. The user pastes the service account's JSON key into
-**Integrations, Google, Drive folders**. The key goes to their firewall and stays there.
+Nothing else in the user's Drive is reachable. The user drops the service account's JSON key file on
+**Integrations, Google Drive folders** (/dashboard/integrations/drive-folders). The key goes to their firewall and stays there.
 
 This is separate from the Google account connection (`/controlclaw-google-oauth`), which gives
 agents Gmail, Calendar, Drive and the rest through the account itself. Either works without the
@@ -130,7 +130,7 @@ Tell the user:
 - that the key holds a private key: keep it out of git and chat; to revoke it, delete it on the
   Keys tab and make a new one,
 - how to connect:
-  1. ControlClaw, **Integrations, Google**, the **Drive folders** card: paste the whole JSON key.
+  1. ControlClaw, **Integrations, Google Drive folders**: drop the JSON key file (or choose it; pasting is under "Paste the key instead"). No Google account connection is needed.
      Tick **Let agents change files** only if a folder is on a shared drive and shared as Editor.
   2. **Add folder**: paste a folder link, give it a name (the directory name on the agent), pick
      read-only or read-write, and the agents that mount it.
