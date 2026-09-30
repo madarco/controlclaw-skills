@@ -11,6 +11,23 @@ a setup task around ControlClaw.
 
 ## Install
 
+With the [skills.sh](https://skills.sh) CLI:
+
+```bash
+npx skills add madarco/controlclaw-skills
+```
+
+It asks which skills to install and which agents to add them to. To install just one, name it:
+
+```bash
+npx skills add madarco/controlclaw-skills --skill controlclaw-google-oauth
+```
+
+Then run `/controlclaw-google-oauth` or `/controlclaw-google-drive` in Claude Code, or ask your agent
+to do the task.
+
+### Manual install (Claude Code)
+
 ```bash
 git clone https://github.com/madarco/controlclaw-skills.git
 cd controlclaw-skills
