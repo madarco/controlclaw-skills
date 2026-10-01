@@ -15,7 +15,7 @@ The result is:
 - a consent screen whose sign-ins do not expire: **Internal** for a Google Workspace organisation, or
   **External** and published **In production** (unverified) for anyone else,
 - a **Web application** OAuth client with ControlClaw's redirect URI,
-- the client JSON saved on disk, mode `0600`.
+- the client JSON saved on disk.
 
 It takes about 10 minutes, most of it waiting for the console.
 
