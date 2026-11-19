@@ -14,10 +14,10 @@ Claude Code or any agent that reads `SKILL.md`) through a setup task around Cont
 
 ### In OpenClaw
 
-From [ClawHub](https://clawhub.ai):
+From [ClawHub](https://clawhub.ai/madawaldos/controlclaw-firewall):
 
 ```bash
-openclaw skills install @madarco/controlclaw-firewall
+openclaw skills install controlclaw-firewall
 ```
 
 Or copy `skills/controlclaw-firewall/` into your workspace's `skills/` folder. Then ask OpenClaw to
